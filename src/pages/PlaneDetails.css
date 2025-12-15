@@ -1,0 +1,74 @@
+.plan-details {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.plan-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cover-wrapper {
+  border: 3px solid #000;
+  margin-bottom: 20px;
+}
+
+.cover-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.plan-description {
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+/* EXPERIENCES */
+.experiences {
+  border-top: 2px solid #000;
+  padding-top: 15px;
+  margin-bottom: 30px;
+}
+
+.experiences ul {
+  padding-left: 20px;
+}
+
+.experiences li {
+  margin-bottom: 8px;
+}
+
+/* FOOD */
+.food {
+  border-top: 2px solid #000;
+  padding-top: 15px;
+}
+
+.food-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.food-item {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.food-img {
+  width: 180px;
+  height: 120px;
+  object-fit: cover;
+  border: 2px solid #000;
+}
+
+.food-info h3 {
+  margin: 0 0 5px 0;
+}
+
+.food-info p {
+  margin: 0;
+}
