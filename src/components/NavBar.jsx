@@ -23,9 +23,16 @@ function NavBar({ search, setSearch }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 sticky-top">
       {/* LOGO */}
-      <Link className="navbar-brand d-flex align-items-center" to="/">
-        <img src={logo} alt="Planora logo" height="42" className="me-2" />
-        <span className="fw-bold"></span>
+      <Link
+        className="navbar-brand d-flex align-items-center py-0"
+        to="/"
+      >
+        <img
+          src={logo}
+          alt="Planora logo"
+          height="56"
+          className="me-2"
+        />
       </Link>
 
       {/* BUSCADOR — SOLO EN HOME */}
