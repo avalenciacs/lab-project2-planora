@@ -30,3 +30,12 @@ export const updateVotes = async (id, newVotes) => {
     votes: newVotes,
   });
 };
+
+export const updatePlan = async (id, data) => {
+  await axios.put(`${BASE_URL}/${id}.json`, data);
+};
+
+export const deletePlan = async (id) => {
+  await axios.delete(`${BASE_URL}/${id}.json`);
+};
+
