@@ -43,10 +43,6 @@ input, textarea, select {
   overflow: hidden;
 }
 
-.navbar input {
-  max-width: 420px;
-}
-
 .food-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -58,4 +54,40 @@ input, textarea, select {
   height: 120px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+
+.create-plan {
+  max-width: 700px;
+  margin: auto;
+}
+
+.create-plan h2 {
+  margin-bottom: 1.5rem;
+}
+
+.activity-box {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fafafa;
+}
+
+.navbar-search {
+  width: 100%;
+  max-width: 420px;
+}
+
+.search-input {
+  border-radius: 999px;
+  padding: 10px 18px;
+  border: none;
+}
+
+/* Mobile */
+@media (max-width: 991px) {
+  .navbar-search {
+    max-width: 100%;
+  }
 }

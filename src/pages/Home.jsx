@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import PlanCard from "../components/PlanCard";
 import { getAllPlans } from "../services/plans.service";
 
+/* 🔠 Normalizar texto (acentos, mayúsculas) */
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+};
+
 function Home({ search }) {
   const [plans, setPlans] = useState([]);
 
@@ -16,10 +24,14 @@ function Home({ search }) {
 
   const isSearching = search.trim() !== "";
 
+  /* 🔍 Filtrado por ciudad SIN acentos */
   const filteredPlans = plans.filter((plan) =>
-    plan.city?.toLowerCase().includes(search.toLowerCase())
+    normalizeText(plan.city || "").includes(
+      normalizeText(search)
+    )
   );
 
+  /* ⭐ Top plans por votos */
   const topPlans = [...plans]
     .sort((a, b) => (b.votes || 0) - (a.votes || 0))
     .slice(0, 6);
@@ -27,7 +39,7 @@ function Home({ search }) {
   return (
     <div className="container my-5">
 
-      {/* TOP PLANS */}
+      {/* TOP PLANS (solo si no se busca) */}
       {!isSearching && (
         <>
           <h2 className="mb-4">Top plans</h2>

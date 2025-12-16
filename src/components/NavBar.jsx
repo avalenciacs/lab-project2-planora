@@ -1,50 +1,67 @@
-import { Link, NavLink } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
+import { useEffect } from "react";
 import logo from "../assets/logo.png";
 
 function NavBar({ search, setSearch }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isHome = location.pathname === "/";
+
+  // 🧼 Limpiar buscador al salir de Home
+  useEffect(() => {
+    if (!isHome) {
+      setSearch("");
+    }
+  }, [location.pathname]);
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-      <div className="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 sticky-top">
+      {/* LOGO */}
+      <Link className="navbar-brand d-flex align-items-center" to="/">
+        <img src={logo} alt="Planora logo" height="42" className="me-2" />
+        <span className="fw-bold"></span>
+      </Link>
 
-        {/* LOGO */}
-        <Link className="navbar-brand d-flex align-items-center" to="/">
-          <img src={logo} alt="Planora logo" height="40" />
-        </Link>
-
-        {/* BOTÓN MOBILE */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#planoraNavbar"
+      {/* BUSCADOR — SOLO EN HOME */}
+      {isHome && (
+        <div
+          className="position-absolute start-50 translate-middle-x d-none d-lg-block"
+          style={{ width: "420px" }}
         >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+          <input
+            type="text"
+            className="form-control rounded-pill text-center shadow-sm"
+            placeholder="Search by city (e.g. Málaga)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      )}
 
-        {/* CONTENIDO */}
-        <div className="collapse navbar-collapse" id="planoraNavbar">
 
-          {/* BUSCADOR CENTRADO (DESKTOP) */}
-          <div className="mx-auto d-none d-lg-flex w-50 justify-content-center">
-            <input
-              type="text"
-              className="form-control rounded-pill text-center"
-              placeholder="Search by city (e.g. Malaga)"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onFocus={() => {
-                document
-                  .getElementById("all-plans")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }}
-            />
-          </div>
+      {/* BOTÓN MOBILE */}
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#planoraNavbar"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
 
-          {/* LINKS + BUSCADOR MOBILE */}
-          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+      {/* LINKS */}
+      <div className="collapse navbar-collapse" id="planoraNavbar">
+        <ul className="navbar-nav ms-auto">
 
-            {/* BUSCADOR SOLO MOBILE */}
-            <li className="nav-item d-lg-none mb-3">
+          {/* BUSCADOR EN MOBILE */}
+          {isHome && (
+            <li className="nav-item d-lg-none my-3">
               <input
                 type="text"
                 className="form-control text-center"
@@ -53,21 +70,27 @@ function NavBar({ search, setSearch }) {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </li>
+          )}
 
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/">
-                Home
-              </NavLink>
-            </li>
+          {/* HOME → limpia buscador */}
+          <li className="nav-item">
+            <button
+              className="nav-link btn btn-link text-white"
+              onClick={() => {
+                setSearch("");
+                navigate("/");
+              }}
+            >
+              Home
+            </button>
+          </li>
 
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/create">
-                Create Plan
-              </NavLink>
-            </li>
-
-          </ul>
-        </div>
+          <li className="nav-item">
+            <NavLink className="nav-link" to="/create">
+              Create Plan
+            </NavLink>
+          </li>
+        </ul>
       </div>
     </nav>
   );
