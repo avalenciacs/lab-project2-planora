@@ -78,6 +78,7 @@ plans: {
 }
 
 
+
 This structure allows:
 
 Multiple plans per city
@@ -126,7 +127,7 @@ Responsive design and accessibility
 
 🧑‍💻 Francisco Sorkin
 
-Backend & Data Developer
+Fronted Developer React , Python
 
 Firebase Realtime Database design
 
