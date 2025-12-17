@@ -95,3 +95,39 @@ input, textarea, select {
 .about-hero img {
   filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
 }
+
+/* ABOUT PAGE */
+
+.about-hero {
+  background: linear-gradient(
+    180deg,
+    #f8fafc 0%,
+    #ffffff 100%
+  );
+}
+
+.about-page h2 {
+  font-weight: 600;
+}
+
+.about-page p {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Feature cards */
+.about-page .card {
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-page .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Tech badges */
+.about-page .badge {
+  border-radius: 999px;
+}

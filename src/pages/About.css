@@ -1,0 +1,51 @@
+.about-hero {
+  padding: 5rem 0;
+  background: #fff;
+}
+
+.about-logo {
+  height: 80px;
+}
+
+.about-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.about-subtitle {
+  font-size: 1.2rem;
+  color: #6c757d;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+.why-card,
+.feature-card,
+.team-card {
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.why-card:hover,
+.feature-card:hover,
+.team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.tech-badge {
+  background: #212529;
+  color: #fff;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
