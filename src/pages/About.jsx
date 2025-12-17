@@ -136,7 +136,7 @@ function About() {
             <div className="card team-card text-center">
               <h5>Francisco Sorkin</h5>
               <p className="text-muted">
-                Backend & Data — Firebase RTDB, data modeling
+                Fronted Developer React , Python
               </p>
               <div className="d-flex justify-content-center gap-3">
                 <a href="https://github.com/fransorkin" target="_blank">GitHub</a>
