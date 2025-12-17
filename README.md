@@ -137,6 +137,7 @@ Seed data and plan structure
 Backend logic and scalability planning
 
 🔗 GitHub: https://github.com/fransorkin
+
 🔗 LinkedIn: https://www.linkedin.com/in/francisco-sorkin
 
 🧪 Project Status
