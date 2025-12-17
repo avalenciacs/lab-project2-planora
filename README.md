@@ -9,6 +9,7 @@ Each plan represents a concrete experience in a specific city — such as food r
 🚀 Live Demo
 
 🔗Planora Page:  https://planora-phi.vercel.app/
+
 🧠 Concept & Motivation
 
 Most travel platforms focus on generic tourist attractions.
