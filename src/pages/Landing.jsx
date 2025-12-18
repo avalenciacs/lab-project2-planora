@@ -57,19 +57,19 @@ function Landing() {
   return (
     <div>
       {/* ================= HERO ================= */}
-      <section className="text-center pt-4 pb-3">
+      <section className="text-center px-3 pt-2 pb-3">
         <img
           src={logo}
           alt="Planora logo"
-          style={{ height: "70px" }}
-          className="mb-3"
+          style={{ height: "54px" }}
+          className="mb-2"
         />
 
-        <h1 className="fw-bold mb-2">
+        <h1 className="fw-bold mb-1 fs-5 fs-md-3">
           Discover real travel plans
         </h1>
 
-        <p className="text-muted mb-3">
+        <p className="text-muted mb-2 small">
           Explore authentic experiences created by travelers, not algorithms.
         </p>
 
@@ -83,10 +83,10 @@ function Landing() {
         {/* LOGIN VALUE BOX */}
         <div className="container d-flex justify-content-center">
           <div
-            className="border rounded px-4 py-3"
-            style={{ maxWidth: "520px", background: "#fafafa" }}
+            className="border rounded px-3 py-2 bg-light"
+            style={{ maxWidth: "520px" }}
           >
-            <p className="fw-semibold mb-1">
+            <p className="fw-semibold mb-1 small">
               Travel is better when it’s shared.
             </p>
             <p className="text-muted small mb-0">
@@ -98,7 +98,7 @@ function Landing() {
       </section>
 
       {/* ================= CAROUSEL ================= */}
-      <section className="container my-4">
+      <section className="container my-3">
         <div
           id="plansCarousel"
           className="carousel slide shadow rounded overflow-hidden"
@@ -114,7 +114,7 @@ function Landing() {
                   className="d-block w-100"
                   alt={slide.title}
                   style={{
-                    height: "360px",
+                    height: "220px",
                     objectFit: "cover",
                   }}
                 />
@@ -123,10 +123,8 @@ function Landing() {
                   <span className="badge bg-secondary mb-2">
                     {slide.type}
                   </span>
-
-                  <h5 className="mb-1">{slide.title}</h5>
-
-                  <p className="text-muted mb-0">
+                  <h6 className="mb-1">{slide.title}</h6>
+                  <p className="text-muted small mb-0">
                     {slide.subtitle}
                   </p>
                 </div>
@@ -163,4 +161,3 @@ function Landing() {
 }
 
 export default Landing;
-

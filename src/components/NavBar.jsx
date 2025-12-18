@@ -1,4 +1,7 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import Collapse from "bootstrap/js/dist/collapse";
+
 import { useAuth } from "../context/AuthContext";
 import { loginWithGoogle, logout } from "../services/auth.service";
 import logo from "../assets/logo.png";
@@ -8,104 +11,161 @@ function NavBar({ search, setSearch }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ❌ No mostrar navbar en Landing
+  // No mostrar navbar en Landing
   if (location.pathname === "/") return null;
 
   const showSearch = location.pathname === "/home";
 
-  const handleLogin = async () => {
-    try {
-      await loginWithGoogle();
-      navigate("/home");
-    } catch (err) {
-      console.error("Login error", err);
+  const collapseRef = useRef(null);
+  const collapseInstance = useRef(null);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (collapseRef.current) {
+      collapseInstance.current = new Collapse(collapseRef.current, {
+        toggle: false,
+      });
     }
+  }, []);
+
+  /* ================= MENU CONTROL ================= */
+  const toggleMenu = () => {
+    if (!collapseInstance.current) return;
+
+    if (isOpen) {
+      collapseInstance.current.hide();
+    } else {
+      collapseInstance.current.show();
+    }
+
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    collapseInstance.current?.hide();
+    setIsOpen(false);
+  };
+
+  /* ================= AUTH ================= */
+  const handleLogin = async () => {
+    await loginWithGoogle();
+    closeMenu();
+    navigate("/home");
   };
 
   const handleLogout = async () => {
     await logout();
-    setSearch(""); // limpiamos buscador
+    setSearch("");
+    closeMenu();
     navigate("/home");
   };
 
   const handleHomeClick = () => {
     setSearch("");
+    closeMenu();
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark sticky-top py-2">
-      <div className="container-fluid px-4 d-flex align-items-center">
+    <nav className="navbar navbar-dark bg-dark navbar-expand-lg sticky-top">
+      <div className="container-fluid px-3">
 
         {/* LOGO */}
         <Link
-          className="navbar-brand d-flex align-items-center"
+          className="navbar-brand"
           to="/home"
           onClick={handleHomeClick}
         >
-          <img src={logo} alt="Planora" height="48" />
+          <img src={logo} alt="Planora" height="40" />
         </Link>
 
-        {/* SEARCH (solo Home) */}
+        {/* HAMBURGER */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          aria-expanded={isOpen}
+          aria-label="Toggle navigation"
+          onClick={toggleMenu}
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        {/* COLLAPSE */}
+        <div
+          ref={collapseRef}
+          className="collapse navbar-collapse"
+        >
+          {/* SEARCH MOBILE */}
+          {showSearch && (
+            <div className="d-lg-none my-3">
+              <input
+                type="search"
+                className="form-control"
+                placeholder="Search by city or country"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          )}
+
+          <ul className="navbar-nav ms-lg-auto text-center gap-2">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/home" onClick={closeMenu}>
+                Home
+              </NavLink>
+            </li>
+
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/about" onClick={closeMenu}>
+                About
+              </NavLink>
+            </li>
+
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/create" onClick={closeMenu}>
+                    Create Plan
+                  </NavLink>
+                </li>
+
+                <li className="nav-item mt-2">
+                  <button
+                    className="btn btn-outline-light btn-sm"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item mt-2">
+                <button
+                  className="btn btn-outline-light btn-sm"
+                  onClick={handleLogin}
+                >
+                  Login
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+
+        {/* SEARCH DESKTOP (CENTERED) */}
         {showSearch && (
-          <div className="flex-grow-1 d-flex justify-content-center">
+          <div
+            className="d-none d-lg-block position-absolute start-50 translate-middle-x"
+            style={{ width: "420px" }}
+          >
             <input
               type="search"
               className="form-control"
               placeholder="Search by city or country"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{
-                maxWidth: "420px",
-                borderRadius: "999px",
-              }}
             />
           </div>
         )}
-
-        {/* RIGHT MENU */}
-        <div className="ms-auto d-flex align-items-center gap-3">
-          <NavLink className="nav-link text-white" to="/home">
-            Home
-          </NavLink>
-
-          <NavLink className="nav-link text-white" to="/about">
-            About
-          </NavLink>
-
-          {user ? (
-            <>
-              <NavLink className="nav-link text-white" to="/create">
-                Create Plan
-              </NavLink>
-
-              <img
-                src={user.photoURL}
-                alt={user.displayName}
-                title={user.displayName}
-                style={{
-                  width: "34px",
-                  height: "34px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-
-              <button
-                className="btn btn-sm btn-outline-light"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <button
-              className="btn btn-outline-light btn-sm"
-              onClick={handleLogin}
-            >
-              Login
-            </button>
-          )}
-        </div>
       </div>
     </nav>
   );
