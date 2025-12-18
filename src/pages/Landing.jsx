@@ -37,7 +37,6 @@ const slides = [
 ];
 
 function Landing() {
-  /* ================= FORCE BOOTSTRAP CAROUSEL ================= */
   useEffect(() => {
     const el = document.querySelector("#plansCarousel");
 
@@ -57,7 +56,7 @@ function Landing() {
   return (
     <div>
       {/* ================= HERO ================= */}
-      <section className="text-center px-3 pt-2 pb-3">
+      <section className="text-center px-3 pt-3 pb-4">
         <img
           src={logo}
           alt="Planora logo"
@@ -73,19 +72,12 @@ function Landing() {
           Explore authentic experiences created by travelers, not algorithms.
         </p>
 
-        <Link
-          to="/home"
-          className="btn btn-danger px-4 py-2 mb-3"
-        >
+        <Link to="/home" className="btn btn-danger px-4 py-2 mb-3">
           Explore plans
         </Link>
 
-        {/* LOGIN VALUE BOX */}
-        <div className="container d-flex justify-content-center">
-          <div
-            className="border rounded px-3 py-2 bg-light"
-            style={{ maxWidth: "520px" }}
-          >
+        <div className="d-flex justify-content-center">
+          <div className="border rounded px-3 py-2 bg-light landing-value-box">
             <p className="fw-semibold mb-1 small">
               Travel is better when it’s shared.
             </p>
@@ -98,25 +90,23 @@ function Landing() {
       </section>
 
       {/* ================= CAROUSEL ================= */}
-      <section className="container my-3">
+      <section className="landing-carousel-wrapper">
         <div
           id="plansCarousel"
-          className="carousel slide shadow rounded overflow-hidden"
+          className="carousel slide shadow overflow-hidden"
         >
           <div className="carousel-inner">
             {slides.map((slide, index) => (
               <div
                 key={index}
-                className={`carousel-item ${index === 0 ? "active" : ""}`}
+                className={`carousel-item ${
+                  index === 0 ? "active" : ""
+                } landing-slide`}
               >
                 <img
                   src={slide.img}
-                  className="d-block w-100"
+                  className="d-block w-100 landing-carousel-img"
                   alt={slide.title}
-                  style={{
-                    height: "220px",
-                    objectFit: "cover",
-                  }}
                 />
 
                 <div className="bg-white text-center p-3">
@@ -152,9 +142,6 @@ function Landing() {
           </button>
         </div>
 
-        <p className="text-center text-muted mt-3 small">
-          Discover real plans · Travel like a local
-        </p>
       </section>
     </div>
   );

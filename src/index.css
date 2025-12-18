@@ -92,3 +92,39 @@ input, textarea, select {
   }
 }
 
+/* === Landing value box === */
+.landing-value-box {
+  max-width: 520px;
+}
+
+/* === Carousel wrapper === */
+.landing-carousel-wrapper {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* === Mobile (no tocar lo que ya funciona) === */
+.landing-carousel-img {
+  height: 220px;
+  object-fit: cover;
+}
+
+/* === Desktop upgrade === */
+@media (min-width: 768px) {
+  .landing-carousel-wrapper {
+    max-width: 1220px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .landing-carousel-img {
+    height: 520px;
+  }
+}
+
+/* === Large screens === */
+@media (min-width: 1200px) {
+  .landing-carousel-img {
+    height: 450px;
+  }
+}
