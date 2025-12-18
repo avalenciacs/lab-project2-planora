@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Carousel } from "bootstrap";
 import logo from "../assets/logo2.png";
 
 const slides = [
@@ -35,14 +37,31 @@ const slides = [
 ];
 
 function Landing() {
+  /* ================= FORCE BOOTSTRAP CAROUSEL ================= */
+  useEffect(() => {
+    const el = document.querySelector("#plansCarousel");
+
+    if (el) {
+      const carousel = new Carousel(el, {
+        interval: 4500,
+        ride: "carousel",
+        pause: false,
+        touch: true,
+        wrap: true,
+      });
+
+      return () => carousel.dispose();
+    }
+  }, []);
+
   return (
     <div>
       {/* ================= HERO ================= */}
-      <section className="text-center py-5">
+      <section className="text-center pt-4 pb-3">
         <img
           src={logo}
           alt="Planora logo"
-          style={{ height: "80px" }}
+          style={{ height: "70px" }}
           className="mb-3"
         />
 
@@ -50,34 +69,39 @@ function Landing() {
           Discover real travel plans
         </h1>
 
-        <p className="text-muted mb-4">
+        <p className="text-muted mb-3">
           Explore authentic experiences created by travelers, not algorithms.
         </p>
 
-        <Link to="/home" className="btn btn-dark px-4 mb-3">
+        <Link
+          to="/home"
+          className="btn btn-danger px-4 py-2 mb-3"
+        >
           Explore plans
         </Link>
 
-        {/* LOGIN VALUE */}
-        <div className="mt-3">
-          <p className="fw-semibold mb-1">
-            Travel is better when it’s shared.
-          </p>
-
-          <p className="text-muted small mb-0">
-            Log in to create your own plans, like authentic routes and inspire
-            travelers around the world.
-          </p>
+        {/* LOGIN VALUE BOX */}
+        <div className="container d-flex justify-content-center">
+          <div
+            className="border rounded px-4 py-3"
+            style={{ maxWidth: "520px", background: "#fafafa" }}
+          >
+            <p className="fw-semibold mb-1">
+              Travel is better when it’s shared.
+            </p>
+            <p className="text-muted small mb-0">
+              Log in to create your own plans, like authentic routes and inspire
+              travelers around the world.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* ================= CAROUSEL ================= */}
-      <section className="container my-5">
+      <section className="container my-4">
         <div
           id="plansCarousel"
           className="carousel slide shadow rounded overflow-hidden"
-          data-bs-ride="carousel"
-          data-bs-interval="4000"
         >
           <div className="carousel-inner">
             {slides.map((slide, index) => (
@@ -89,7 +113,10 @@ function Landing() {
                   src={slide.img}
                   className="d-block w-100"
                   alt={slide.title}
-                  style={{ height: "420px", objectFit: "cover" }}
+                  style={{
+                    height: "360px",
+                    objectFit: "cover",
+                  }}
                 />
 
                 <div className="bg-white text-center p-3">
@@ -127,8 +154,7 @@ function Landing() {
           </button>
         </div>
 
-        {/* FOOTER LINE */}
-        <p className="text-center text-muted mt-4">
+        <p className="text-center text-muted mt-3 small">
           Discover real plans · Travel like a local
         </p>
       </section>
@@ -137,3 +163,4 @@ function Landing() {
 }
 
 export default Landing;
+

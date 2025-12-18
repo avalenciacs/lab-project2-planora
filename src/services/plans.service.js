@@ -1,5 +1,14 @@
 import { db } from "../config/firebase";
-import { ref, get, push, update, remove } from "firebase/database";
+import {
+  ref,
+  get,
+  push,
+  update,
+  remove,
+  query,
+  orderByChild,
+  limitToLast,
+} from "firebase/database";
 
 /* ================= GET ALL ================= */
 export const getAllPlans = async () => {
@@ -22,10 +31,10 @@ export const getPlanById = async (id) => {
 export const createPlan = async (planData) => {
   const newRef = push(ref(db, "places"));
 
-  // 🔴 IMPORTANTE: inicializamos likes vacío
   await update(newRef, {
     ...planData,
     likes: {},
+    likesCount: 0, // 🔥 CLAVE PARA TOP PLANS
   });
 
   return newRef.key;
@@ -33,19 +42,58 @@ export const createPlan = async (planData) => {
 
 /* ================= UPDATE (EDIT PLAN) ================= */
 export const updatePlan = async (id, data) => {
-  // ❗ NO tocamos likes aquí
+  // ❗ NO tocamos likes ni likesCount aquí
   await update(ref(db, `places/${id}`), data);
 };
 
-/* ================= LIKE / UNLIKE ================= */
+/* ================= LIKE ================= */
 export const likePlan = async (planId, userId) => {
-  await update(ref(db, `places/${planId}/likes`), {
-    [userId]: true,
+  const planRef = ref(db, `places/${planId}`);
+  const snapshot = await get(planRef);
+
+  if (!snapshot.exists()) return;
+
+  const plan = snapshot.val();
+  const likesCount = plan.likesCount || 0;
+
+  await update(planRef, {
+    [`likes/${userId}`]: true,
+    likesCount: likesCount + 1,
   });
 };
 
+/* ================= UNLIKE ================= */
 export const unlikePlan = async (planId, userId) => {
+  const planRef = ref(db, `places/${planId}`);
+  const snapshot = await get(planRef);
+
+  if (!snapshot.exists()) return;
+
+  const plan = snapshot.val();
+  const likesCount = Math.max((plan.likesCount || 1) - 1, 0);
+
+  await update(planRef, {
+    likesCount,
+  });
+
   await remove(ref(db, `places/${planId}/likes/${userId}`));
+};
+
+/* ================= TOP PLANS ================= */
+export const getTopPlans = async () => {
+  const q = query(
+    ref(db, "places"),
+    orderByChild("likesCount"),
+    limitToLast(9)
+  );
+
+  const snapshot = await get(q);
+  if (!snapshot.exists()) return [];
+
+  // 🔥 reverse → el más liked primero
+  return Object.entries(snapshot.val())
+    .map(([id, plan]) => ({ id, ...plan }))
+    .reverse();
 };
 
 /* ================= DELETE ================= */

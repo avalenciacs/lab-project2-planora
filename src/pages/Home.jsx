@@ -15,6 +15,7 @@ function Home({ search }) {
     getAllPlans().then(setPlans);
   }, []);
 
+  /* ================= SEARCH ================= */
   const query = normalize(search);
   const isSearching = query.length > 0;
 
@@ -28,11 +29,53 @@ function Home({ search }) {
     });
   }, [plans, query, isSearching]);
 
+  /* ================= TOP PLANS (LIKES) ================= */
+  const topPlans = useMemo(() => {
+    return [...plans]
+      .map((plan) => ({
+        ...plan,
+        likesCount: plan.likes
+          ? Object.keys(plan.likes).length
+          : 0,
+      }))
+      .sort((a, b) => b.likesCount - a.likesCount)
+      .slice(0, 9)
+      .filter((plan) => plan.likesCount > 0);
+  }, [plans]);
+
   return (
     <div className="container my-5">
-      <h2 className="mb-4">
-        {isSearching ? `Results for "${search}"` : "All plans"}
+
+      {/* 🔥 TOP PLANS */}
+      {!isSearching && topPlans.length > 0 && (
+        <>
+          <h2 className="fw-bold mb-1">🔥 Top plans</h2>
+          <p className="text-muted mb-4">
+            Most loved travel plans by the community
+          </p>
+
+          <div className="row g-4 mb-5">
+            {topPlans.map((plan) => (
+              <div className="col-lg-4 col-md-6" key={plan.id}>
+                <PlanCard plan={plan} />
+              </div>
+            ))}
+          </div>
+
+          <hr className="my-5" />
+        </>
+      )}
+
+      {/* 🌍 ALL PLANS / SEARCH RESULTS */}
+      <h2 className="fw-semibold mb-1">
+        {isSearching ? `Results for "${search}"` : "🌍 All plans"}
       </h2>
+
+      <p className="text-muted mb-4">
+        {isSearching
+          ? "Plans matching your search"
+          : "Discover all shared travel plans around the world"}
+      </p>
 
       {isSearching && filteredPlans.length === 0 && (
         <p className="text-muted">No results found</p>
@@ -50,3 +93,4 @@ function Home({ search }) {
 }
 
 export default Home;
+
