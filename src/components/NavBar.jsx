@@ -1,104 +1,111 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { loginWithGoogle, logout } from "../services/auth.service";
+import logo from "../assets/logo.png";
+
+function NavBar({ search, setSearch }) {
+  const { user } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const isHome = location.pathname === "/";
+  // ❌ No mostrar navbar en Landing
+  if (location.pathname === "/") return null;
 
-  // 🧼 Limpiar buscador al salir de Home
-  useEffect(() => {
-    if (!isHome) {
-      setSearch("");
+  const showSearch = location.pathname === "/home";
+
+  const handleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      navigate("/home");
+    } catch (err) {
+      console.error("Login error", err);
     }
-  }, [location.pathname]);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setSearch(""); // limpiamos buscador
+    navigate("/home");
+  };
+
+  const handleHomeClick = () => {
+    setSearch("");
+  };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 sticky-top">
-      {/* LOGO */}
-      <Link
-        className="navbar-brand d-flex align-items-center py-0"
-        to="/"
-      >
-        <img
-          src={logo}
-          alt="Planora logo"
-          height="56"
-          className="me-2"
-        />
-      </Link>
+    <nav className="navbar navbar-dark bg-dark sticky-top py-2">
+      <div className="container-fluid px-4 d-flex align-items-center">
 
-      {/* BUSCADOR — SOLO EN HOME */}
-      {isHome && (
-        <div
-          className="position-absolute start-50 translate-middle-x d-none d-lg-block"
-          style={{ width: "420px" }}
+        {/* LOGO */}
+        <Link
+          className="navbar-brand d-flex align-items-center"
+          to="/home"
+          onClick={handleHomeClick}
         >
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by city or country (e.g. Malaga, Spain)"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <img src={logo} alt="Planora" height="48" />
+        </Link>
 
-        </div>
-      )}
+        {/* SEARCH (solo Home) */}
+        {showSearch && (
+          <div className="flex-grow-1 d-flex justify-content-center">
+            <input
+              type="search"
+              className="form-control"
+              placeholder="Search by city or country"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                maxWidth: "420px",
+                borderRadius: "999px",
+              }}
+            />
+          </div>
+        )}
 
+        {/* RIGHT MENU */}
+        <div className="ms-auto d-flex align-items-center gap-3">
+          <NavLink className="nav-link text-white" to="/home">
+            Home
+          </NavLink>
 
-      {/* BOTÓN MOBILE */}
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#planoraNavbar"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
+          <NavLink className="nav-link text-white" to="/about">
+            About
+          </NavLink>
 
-      {/* LINKS */}
-      <div className="collapse navbar-collapse" id="planoraNavbar">
-        <ul className="navbar-nav ms-auto">
+          {user ? (
+            <>
+              <NavLink className="nav-link text-white" to="/create">
+                Create Plan
+              </NavLink>
 
-          {/* BUSCADOR EN MOBILE */}
-          {isHome && (
-            <li className="nav-item d-lg-none my-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Search by city or country (e.g. Malaga, Spain)"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+              <img
+                src={user.photoURL}
+                alt={user.displayName}
+                title={user.displayName}
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
               />
 
-            </li>
-          )}
-
-          {/* HOME → limpia buscador */}
-          <li className="nav-item">
+              <button
+                className="btn btn-sm btn-outline-light"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
             <button
-              className="nav-link btn btn-link text-white"
-              onClick={() => {
-                setSearch("");
-                navigate("/");
-              }}
+              className="btn btn-outline-light btn-sm"
+              onClick={handleLogin}
             >
-              Home
+              Login
             </button>
-          </li>
-
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/create">
-              Create Plan
-            </NavLink>
-          </li>
-
-          {/* 👉 ABOUT */}
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/about">
-              About
-            </NavLink>
-          </li>
-        </ul>
+          )}
+        </div>
       </div>
     </nav>
   );

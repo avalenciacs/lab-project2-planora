@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
 
 function PlanCard({ plan }) {
+  const likesCount = plan.likes
+    ? Object.keys(plan.likes).length
+    : 0;
+
   return (
     <div className="card plan-card h-100">
       <img
@@ -18,7 +22,10 @@ function PlanCard({ plan }) {
         <p className="card-text">{plan.description}</p>
 
         <div className="mt-auto d-flex justify-content-between align-items-center">
-          <span className="text-muted">⭐ {plan.votes || 0}</span>
+          {/* ❤️ LIKES */}
+          <span className="text-muted">
+            ❤️ {likesCount} {likesCount === 1 ? "like" : "likes"}
+          </span>
 
           <Link
             to={`/plans/${plan.id}`}
