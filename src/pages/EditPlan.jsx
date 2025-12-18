@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { getPlanById, updatePlan } from "../services/plans.service";
 
+const ACTIVITY_TYPES = [
+  "experience",
+  "culture",
+  "nature",
+  "food",
+  "nightlife",
+];
+
 function EditPlan() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -12,35 +22,35 @@ function EditPlan() {
     city: "",
     coverImg: "",
     description: "",
-    activities: []
+    activities: [],
   });
 
   const [loading, setLoading] = useState(true);
 
   /* ================= LOAD PLAN ================= */
   useEffect(() => {
+    const loadPlan = async () => {
+      const data = await getPlanById(id);
+
+      setFormData({
+        name: data.name || "",
+        country: data.country || "",
+        city: data.city || "",
+        coverImg: data.coverImg || "",
+        description: data.description || "",
+        activities: data.actividades
+          ? Object.entries(data.actividades).map(([key, value]) => ({
+              id: key,
+              ...value,
+            }))
+          : [],
+      });
+
+      setLoading(false);
+    };
+
     loadPlan();
-  }, []);
-
-  const loadPlan = async () => {
-    const data = await getPlanById(id);
-
-    setFormData({
-      name: data.name || "",
-      country: data.country || "",
-      city: data.city || "",
-      coverImg: data.coverImg || "",
-      description: data.description || "",
-      activities: data.actividades
-        ? Object.entries(data.actividades).map(([key, value]) => ({
-            id: key,
-            ...value
-          }))
-        : []
-    });
-
-    setLoading(false);
-  };
+  }, [id]);
 
   /* ================= PLAN FIELDS ================= */
   const handleChange = (e) => {
@@ -63,9 +73,9 @@ function EditPlan() {
           type: "experience",
           title: "",
           description: "",
-          img: ""
-        }
-      ]
+          img: "",
+        },
+      ],
     });
   };
 
@@ -79,13 +89,26 @@ function EditPlan() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const activitiesObject = {};
+    if (!user) {
+      alert("Not authorized");
+      return;
+    }
+
+    // ✅ VALIDACIÓN
+    for (const act of formData.activities) {
+      if (!act.title || !act.description) {
+        alert("All places must have a name and description");
+        return;
+      }
+    }
+
+    const actividades = {};
     formData.activities.forEach((act, index) => {
-      activitiesObject[`a${index + 1}`] = {
+      actividades[`a${index + 1}`] = {
         type: act.type,
         title: act.title,
         description: act.description,
-        ...(act.img && { img: act.img })
+        ...(act.img && { img: act.img }),
       };
     });
 
@@ -95,7 +118,9 @@ function EditPlan() {
       city: formData.city,
       coverImg: formData.coverImg,
       description: formData.description,
-      actividades: activitiesObject
+      actividades,
+      // ❌ NO authorId
+      // ❌ NO likes
     };
 
     await updatePlan(id, updatedPlan);
@@ -103,7 +128,9 @@ function EditPlan() {
   };
 
   /* ================= UI ================= */
-  if (loading) return <p className="text-center mt-5">Loading plan...</p>;
+  if (loading) {
+    return <p className="text-center mt-5">Loading plan...</p>;
+  }
 
   return (
     <div className="container my-5">
@@ -117,6 +144,7 @@ function EditPlan() {
           placeholder="Plan name"
           value={formData.name}
           onChange={handleChange}
+          required
         />
 
         <input
@@ -125,6 +153,7 @@ function EditPlan() {
           placeholder="Country"
           value={formData.country}
           onChange={handleChange}
+          required
         />
 
         <input
@@ -133,6 +162,7 @@ function EditPlan() {
           placeholder="City"
           value={formData.city}
           onChange={handleChange}
+          required
         />
 
         <input
@@ -141,58 +171,66 @@ function EditPlan() {
           placeholder="Cover image URL"
           value={formData.coverImg}
           onChange={handleChange}
+          required
         />
 
         <textarea
           className="form-control mb-4"
           name="description"
-          placeholder="Plan description"
+          placeholder="Describe the trip"
           value={formData.description}
           onChange={handleChange}
+          required
         />
 
         <hr />
 
         {/* ACTIVITIES */}
-        <h4 className="mb-3">Activities</h4>
+        <h4 className="mb-2">Places to visit</h4>
+        <p className="text-muted mb-3">
+          Edit the places, restaurants or experiences included in this plan.
+        </p>
 
         {formData.activities.map((activity, index) => (
           <div key={activity.id || index} className="border rounded p-3 mb-3">
+            <strong>Place #{index + 1}</strong>
+
             <select
-              className="form-select mb-2"
+              className="form-select my-2"
               value={activity.type}
               onChange={(e) =>
                 updateActivity(index, "type", e.target.value)
               }
             >
-              <option value="experience">Experience</option>
-              <option value="food">Food</option>
-              <option value="nature">Nature</option>
-              <option value="culture">Culture</option>
-              <option value="nightlife">Nightlife</option>
-              <option value="leisure">Leisure</option>
+              {ACTIVITY_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
             </select>
 
             <input
               className="form-control mb-2"
-              placeholder="Activity title"
+              placeholder="Place name (e.g. Museo Picasso)"
               value={activity.title}
               onChange={(e) =>
                 updateActivity(index, "title", e.target.value)
               }
+              required
             />
 
             <textarea
               className="form-control mb-2"
-              placeholder="Activity description"
+              placeholder="Why is this place worth visiting?"
               value={activity.description}
               onChange={(e) =>
                 updateActivity(index, "description", e.target.value)
               }
+              required
             />
 
             <input
-              className="form-control mb-2"
+              className="form-control"
               placeholder="Image URL (optional)"
               value={activity.img || ""}
               onChange={(e) =>
@@ -200,12 +238,20 @@ function EditPlan() {
               }
             />
 
+            {activity.img && (
+              <img
+                src={activity.img}
+                alt="preview"
+                className="img-fluid mt-2 rounded"
+              />
+            )}
+
             <button
               type="button"
-              className="btn btn-outline-danger"
+              className="btn btn-outline-danger mt-2"
               onClick={() => removeActivity(index)}
             >
-              Remove activity
+              Remove place
             </button>
           </div>
         ))}
@@ -215,10 +261,8 @@ function EditPlan() {
           className="btn btn-outline-secondary mb-4"
           onClick={addActivity}
         >
-          + Add activity
+          + Add place
         </button>
-
-        <br />
 
         <button className="btn btn-primary w-100">
           Save changes

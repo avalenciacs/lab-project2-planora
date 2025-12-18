@@ -1,198 +1,202 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
-const BASE_URL =
-  "https://planora-a08d1-default-rtdb.europe-west1.firebasedatabase.app/places";
+import { useAuth } from "../context/AuthContext";
+import { createPlan } from "../services/plans.service";
 
 const ACTIVITY_TYPES = [
-  "food",
   "experience",
   "culture",
   "nature",
+  "food",
   "nightlife",
 ];
 
 function CreatePlan() {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  // PLAN INFO
-  const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [coverImg, setCoverImg] = useState("");
-  const [description, setDescription] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    country: "",
+    city: "",
+    coverImg: "",
+    description: "",
+  });
 
-  // ACTIVITIES
   const [activities, setActivities] = useState([]);
 
-  const addActivity = () => {
+  /* ================= FORM ================= */
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  /* ================= ACTIVITIES ================= */
+  const addActivity = () =>
     setActivities([
       ...activities,
-      { type: "", title: "", description: "", img: "" },
+      { type: "experience", title: "", description: "", img: "" },
     ]);
-  };
 
-  const updateActivity = (index, field, value) => {
+  const updateActivity = (i, field, value) => {
     const copy = [...activities];
-    copy[index][field] = value;
+    copy[i][field] = value;
     setActivities(copy);
   };
 
-  const removeActivity = (index) => {
-    setActivities(activities.filter((_, i) => i !== index));
-  };
-
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1️⃣ Create plan
-    const planResponse = await axios.post(`${BASE_URL}.json`, {
-      name,
-      country,
-      city: city.toLowerCase(),
-      coverImg,
-      description,
-      votes: 0,
-    });
-
-    const planId = planResponse.data.name;
-
-    // 2️⃣ Create activities
-    for (let activity of activities) {
-      await axios.post(
-        `${BASE_URL}/${planId}/actividades.json`,
-        activity
-      );
+    if (!user) {
+      alert("You must be logged in");
+      return;
     }
 
-    // 3️⃣ Go to details
-    navigate(`/plans/${planId}`);
+    // ✅ VALIDATION
+    for (const act of activities) {
+      if (!act.title || !act.description) {
+        alert("All places must have a name and description");
+        return;
+      }
+    }
+
+    const actividades = {};
+    activities.forEach((a, i) => {
+      actividades[`a${i + 1}`] = {
+        type: a.type,
+        title: a.title,
+        description: a.description,
+        ...(a.img && { img: a.img }),
+      };
+    });
+
+    const newPlan = {
+      ...form,
+      actividades,
+      authorId: user.uid,
+      authorName: user.displayName,
+      createdAt: Date.now(),
+    };
+
+    const id = await createPlan(newPlan);
+    navigate(`/plans/${id}`);
   };
 
+  /* ================= UI ================= */
   return (
     <div className="container my-5">
-      <h2>Create a new plan</h2>
+      <h1>Create a new plan</h1>
 
-      <form onSubmit={handleSubmit} className="mt-4">
-
-        {/* BASIC INFO */}
+      <form onSubmit={handleSubmit}>
+        {/* PLAN INFO */}
         <input
           className="form-control mb-3"
-          placeholder="Plan name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          name="name"
+          placeholder="Plan name (e.g. Weekend in Málaga)"
+          onChange={handleChange}
           required
         />
 
         <input
           className="form-control mb-3"
-          placeholder="Country (e.g. Spain)"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
+          name="country"
+          placeholder="Country"
+          onChange={handleChange}
           required
         />
 
         <input
           className="form-control mb-3"
-          placeholder="City (e.g. Salamanca)"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
+          name="city"
+          placeholder="City"
+          onChange={handleChange}
           required
         />
 
         <input
           className="form-control mb-3"
+          name="coverImg"
           placeholder="Cover image URL"
-          value={coverImg}
-          onChange={(e) => setCoverImg(e.target.value)}
+          onChange={handleChange}
           required
         />
 
         <textarea
           className="form-control mb-4"
-          placeholder="Plan description"
-          rows="3"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          name="description"
+          rows="4"
+          placeholder="Describe the trip and what makes it special"
+          onChange={handleChange}
           required
         />
 
         <hr />
 
         {/* ACTIVITIES */}
-        <h4>Activities</h4>
+        <h4 className="mb-2">Places to visit</h4>
+        <p className="text-muted mb-3">
+          Add specific places, restaurants or experiences you recommend.
+        </p>
 
-        {activities.map((activity, index) => (
-          <div key={index} className="card p-3 mb-3">
+        {activities.map((a, i) => (
+          <div key={i} className="border rounded p-3 mb-3">
+            <strong>Place #{i + 1}</strong>
 
             <select
-              className="form-select mb-2"
-              value={activity.type}
-              onChange={(e) =>
-                updateActivity(index, "type", e.target.value)
-              }
-              required
+              className="form-select my-2"
+              value={a.type}
+              onChange={(e) => updateActivity(i, "type", e.target.value)}
             >
-              <option value="">Select type</option>
-              {ACTIVITY_TYPES.map(type => (
-                <option key={type} value={type}>
-                  {type}
+              {ACTIVITY_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
                 </option>
               ))}
             </select>
 
             <input
               className="form-control mb-2"
-              placeholder="Activity title"
-              value={activity.title}
-              onChange={(e) =>
-                updateActivity(index, "title", e.target.value)
-              }
+              placeholder="Place or activity name (e.g. Museo Picasso, Restaurante El Pimpi)"
+              value={a.title}
+              onChange={(e) => updateActivity(i, "title", e.target.value)}
               required
             />
 
             <textarea
               className="form-control mb-2"
-              placeholder="Activity description"
-              rows="2"
-              value={activity.description}
+              placeholder="Why is this place worth visiting?"
+              value={a.description}
               onChange={(e) =>
-                updateActivity(index, "description", e.target.value)
+                updateActivity(i, "description", e.target.value)
               }
               required
             />
 
             <input
-              className="form-control mb-2"
-              placeholder="Image URL (optional)"
-              value={activity.img}
-              onChange={(e) =>
-                updateActivity(index, "img", e.target.value)
-              }
+              className="form-control"
+              placeholder="Image URL (optional – photo of the place)"
+              value={a.img}
+              onChange={(e) => updateActivity(i, "img", e.target.value)}
             />
 
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm"
-              onClick={() => removeActivity(index)}
-            >
-              Remove activity
-            </button>
+            {a.img && (
+              <img
+                src={a.img}
+                alt="preview"
+                className="img-fluid mt-2 rounded"
+              />
+            )}
           </div>
         ))}
 
         <button
           type="button"
-          className="btn btn-outline-secondary mb-4"
+          className="btn btn-outline-secondary mb-3"
           onClick={addActivity}
         >
-          + Add activity
+          + Add place
         </button>
 
-        <hr />
-
-        <button className="btn btn-primary w-100">
+        <button className="btn btn-dark w-100">
           Create plan
         </button>
       </form>

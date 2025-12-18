@@ -1,41 +1,54 @@
-import axios from "axios";
+import { db } from "../config/firebase";
+import { ref, get, push, update, remove } from "firebase/database";
 
-const BASE_URL =
-  "https://planora-a08d1-default-rtdb.europe-west1.firebasedatabase.app/places";
-
+/* ================= GET ALL ================= */
 export const getAllPlans = async () => {
-  const response = await axios.get(`${BASE_URL}.json`);
+  const snapshot = await get(ref(db, "places"));
+  if (!snapshot.exists()) return [];
 
-  if (!response.data) return [];
-
-  return Object.entries(response.data).map(([id, plan]) => ({
+  return Object.entries(snapshot.val()).map(([id, plan]) => ({
     id,
     ...plan,
   }));
 };
 
+/* ================= GET BY ID ================= */
 export const getPlanById = async (id) => {
-  const response = await axios.get(`${BASE_URL}/${id}.json`);
-  return response.data;
+  const snapshot = await get(ref(db, `places/${id}`));
+  return snapshot.exists() ? snapshot.val() : null;
 };
 
+/* ================= CREATE ================= */
 export const createPlan = async (planData) => {
-  const response = await axios.post(`${BASE_URL}.json`, planData);
-  // Firebase RTDB devuelve { name: "generatedId" }
-  return response.data.name;
+  const newRef = push(ref(db, "places"));
+
+  // 🔴 IMPORTANTE: inicializamos likes vacío
+  await update(newRef, {
+    ...planData,
+    likes: {},
+  });
+
+  return newRef.key;
 };
 
-export const updateVotes = async (id, newVotes) => {
-  await axios.patch(`${BASE_URL}/${id}.json`, {
-    votes: newVotes,
+/* ================= UPDATE (EDIT PLAN) ================= */
+export const updatePlan = async (id, data) => {
+  // ❗ NO tocamos likes aquí
+  await update(ref(db, `places/${id}`), data);
+};
+
+/* ================= LIKE / UNLIKE ================= */
+export const likePlan = async (planId, userId) => {
+  await update(ref(db, `places/${planId}/likes`), {
+    [userId]: true,
   });
 };
 
-export const updatePlan = async (id, data) => {
-  await axios.put(`${BASE_URL}/${id}.json`, data);
+export const unlikePlan = async (planId, userId) => {
+  await remove(ref(db, `places/${planId}/likes/${userId}`));
 };
 
+/* ================= DELETE ================= */
 export const deletePlan = async (id) => {
-  await axios.delete(`${BASE_URL}/${id}.json`);
+  await remove(ref(db, `places/${id}`));
 };
-
