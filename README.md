@@ -76,3 +76,115 @@ plans: {
     createdAt: 1700000000000
   }
 }
+This structure allows:
+
+Multiple plans per city
+
+Unlimited activities per plan
+
+Efficient filtering and sorting
+
+Easy extension to user-based features
+
+🛠️ Tech Stack
+Frontend
+React (functional components & hooks)
+
+React Router (client-side routing)
+
+Bootstrap (responsive UI)
+
+Axios (HTTP requests)
+
+Vite (development & build tool)
+
+Backend
+Firebase Realtime Database
+
+RESTful API interaction
+
+Firebase Authentication (Google)
+
+🧑‍💻 Team & Roles
+👨‍🎨 Anderson Valencia
+Frontend Developer
+
+UI/UX design and implementation
+
+React component architecture
+
+Routing, search logic and filtering
+
+Voting / likes system
+
+Responsive design and accessibility
+
+🔗 GitHub: https://github.com/avalenciacs
+🔗 LinkedIn: https://www.linkedin.com/in/anderson-valencia-885ba1143
+
+👨‍💻 Francisco Sorkin
+Frontend Developer (React) & Python
+
+Firebase Realtime Database design
+
+Data modeling and normalization
+
+Seed data and initial plan structure
+
+Backend logic and scalability planning
+
+🔗 GitHub: https://github.com/fransorkin
+🔗 LinkedIn: https://www.linkedin.com/in/francisco-sorkin
+
+🧪 Project Status
+Planora is a bootcamp project developed as part of a Full Stack Web Development program, showcasing:
+
+Real-world frontend & backend collaboration
+
+Clean architecture and scalable thinking
+
+Feature-driven development
+
+🔮 Future Improvements
+🔐 Full user authentication (Email / Google)
+
+👤 User-based voting (1 like per user)
+
+💬 Comments and reviews per plan
+
+❤️ Favorite plans
+
+📍 Map-based exploration
+
+🌍 Multi-language support
+
+🧑‍🏫 How to Run Locally
+1. Clone the repository
+bash
+Copiar código
+git clone https://github.com/avalenciacs/ab-project2-planora
+cd planora
+2. Install dependencies
+bash
+Copiar código
+npm install
+3. Environment variables
+Create a .env file in the root of the project and add the following variables:
+
+env
+Copiar código
+VITE_FB_API_KEY=your_firebase_api_key
+VITE_FB_AUTH_DOMAIN=your_firebase_auth_domain
+VITE_FB_DATABASE_URL=your_firebase_database_url
+VITE_FB_PROJECT_ID=your_firebase_project_id
+VITE_FB_APP_ID=your_firebase_app_id
+These credentials can be obtained by creating a Firebase project and enabling Realtime Database and Authentication.
+
+4. Run the application
+bash
+Copiar código
+npm run dev
+The app will be available at http://localhost:5173
+
+📄 License
+This project is for educational and portfolio purposes.
