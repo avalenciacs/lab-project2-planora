@@ -45,31 +45,29 @@ The main goals of the project are:
 
 Plans are stored with a scalable and flexible structure:
 
-plans: {
-  planId: {
-    title: "Foodie weekend in Bilbao",
-    country: "Spain",
-    city: "Bilbao",
-    coverImg: "...",
-    description: "...",
-    votes: 25,
-    activities: {
-      a1: {
-        type: "food",
-        title: "Casco Viejo",
-        description: "Pintxos route",
-        img: "..."
+```json
+{
+  "plans": {
+    "planId": {
+      "title": "Foodie weekend in Bilbao",
+      "country": "Spain",
+      "city": "Bilbao",
+      "coverImg": "https://...",
+      "likes": {
+        "userId1": true
       },
-      a2: {
-        type: "culture",
-        title: "Guggenheim Museum",
-        description: "Modern art and architecture"
-      }
-    },
-    createdAt: 1700000000000
+      "activities": {
+        "a1": {
+          "type": "food",
+          "title": "Casco Viejo",
+          "description": "Pintxos route"
+        }
+      },
+      "createdAt": 1700000000000
+    }
   }
 }
-
+```
 
 
 This structure allows:
