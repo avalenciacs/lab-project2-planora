@@ -41,7 +41,7 @@ The main goals of the project are:
 - 👍 Voting / likes system to highlight popular plans
 - 📱 Fully responsive and mobile-friendly UI
 
-🧩 Data Model (Firebase Realtime Database)
+-🧩 Data Model (Firebase Realtime Database)
 
 Plans are stored with a scalable and flexible structure:
 
@@ -82,7 +82,7 @@ Efficient filtering and sorting
 
 Easy extension to user-based features
 
-🛠️ Tech Stack
+-🛠️ Tech Stack
 Frontend
 React (functional components & hooks)
 
@@ -101,7 +101,8 @@ RESTful API interaction
 
 Firebase Authentication (Google)
 
-🧑‍💻 Team & Roles
+-🧑‍💻 Team & Roles
+
 👨‍🎨 Anderson Valencia
 
 Frontend Developer
@@ -117,6 +118,7 @@ Voting / likes system
 Responsive design and accessibility
 
 🔗 GitHub: https://github.com/avalenciacs
+
 🔗 LinkedIn: https://www.linkedin.com/in/anderson-valencia-885ba1143
 
 🧑‍💻 Francisco Sorkin
@@ -132,6 +134,7 @@ Seed data and initial plan structure
 Backend logic and scalability planning
 
 🔗 GitHub: https://github.com/fransorkin
+
 🔗 LinkedIn: https://www.linkedin.com/in/francisco-sorkin
 
 🧪 Project Status
@@ -143,7 +146,7 @@ Clean architecture and scalable thinking
 
 Feature-driven development
 
-🔮 Future Improvements
+-🔮 Future Improvements
 🔐 Full user authentication (Email / Google)
 
 👤 User-based voting (1 like per user)
@@ -156,7 +159,7 @@ Feature-driven development
 
 🌍 Multi-language support
 
-🧑‍🏫 How to Run Locally
+-🧑‍🏫 How to Run Locally
 1. Clone the repository
 bash
 Copiar código
