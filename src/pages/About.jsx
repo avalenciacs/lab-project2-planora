@@ -78,11 +78,11 @@ function About() {
 
         <div className="row g-4">
           {[
-            "Search plans by city and country (accent-insensitive)",
-            "Browse most voted travel plans",
+            "City & country search",
+            "Browse most liked travel plans",
             "Create, edit and delete plans",
             "Activities grouped by category",
-            "Voting system to highlight popular plans",
+            "Like-based popularity system",
             "Responsive and mobile-friendly interface",
           ].map((feature, i) => (
             <div className="col-md-4" key={i}>
